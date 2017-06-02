@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QMessageBox>
+#include <QtWidgets>
 
 namespace Ui {
 class LoginDialog;

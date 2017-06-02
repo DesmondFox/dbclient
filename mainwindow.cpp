@@ -32,6 +32,7 @@ void MainWindow::on_actionConnect_triggered()
     //
 
     loginDlg.exec();
+
 }
 
 void MainWindow::on_actionClose_triggered()
@@ -55,6 +56,7 @@ void MainWindow::slotConnect(QString hostnm, QString dbnm, QString usrnm, QStrin
     try
     {
         // creating connection and processing exception
+        statusLabel->setText("Подключение...");
         pFacade->createConnection(hostnm, dbnm, usrnm, pass);
         ui->actionClose->setEnabled(true);
         ui->actionConnect->setEnabled(false);
