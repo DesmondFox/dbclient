@@ -24,14 +24,17 @@ private slots:
     void on_actionConnect_triggered();
 
     void on_actionClose_triggered();
-    void slotConnect(QString hostnm,
-                     QString dbnm,
-                     QString usrnm,
-                     QString pass);
 
+signals:
+    void closeConnection();
+    void sendConnectionData(QString hst,
+                            QString db,
+                            QString usr,
+                            QString psw);
 private:
     Ui::MainWindow  *ui;
-    DBFacade        *pFacade;
+    DBFacade        *pFacade;       // Фасад
+    QThread         *pThread;       // Поток, в котором будет фасад
     LoginDialog     loginDlg;
     QLabel          *statusLabel;
 };

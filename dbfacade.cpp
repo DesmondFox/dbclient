@@ -14,7 +14,7 @@ DBFacade::~DBFacade()
     delete pDB;
 }
 
-bool DBFacade::createConnection(const QString &server,
+void DBFacade::createConnection(const QString &server,
                                 const QString &dbname,
                                 const QString &username,
                                 const QString &password)
@@ -27,16 +27,17 @@ bool DBFacade::createConnection(const QString &server,
     pDB->setUserName(username);
     pDB->setPassword(password);
 
+    qDebug() << "Notice:\t Creating connection";
     // Проверяем, если соединяется, то всё отлично, иначе кидаем исключение
     if (!pDB->open())
     {
         qDebug() << "Critical:\t No Connection";
         throw DBException(pDB->lastError().text());
-        return false;
+
     }
 
     qDebug() << "Notice:\t Connection established " << pDB->hostName();
-    return true;
+    emit connectionSuccessed();
 }
 
 void DBFacade::closeConnection()

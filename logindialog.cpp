@@ -16,6 +16,26 @@ LoginDialog::~LoginDialog()
     delete ui;
 }
 
+QString LoginDialog::getHostname() const
+{
+    return ui->lineHostname->text();
+}
+
+QString LoginDialog::getDatabase() const
+{
+    return ui->lineDBname->text();
+}
+
+QString LoginDialog::getUsername() const
+{
+    return ui->lineUsername->text();
+}
+
+QString LoginDialog::getPassword() const
+{
+    return ui->linePass->text();
+}
+
 void LoginDialog::okPressed()
 {
     QString errors;

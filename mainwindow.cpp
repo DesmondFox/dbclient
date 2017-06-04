@@ -7,21 +7,36 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // фасад
-    pFacade     = new DBFacade(this);
+    // фасад и поток
+    pFacade     = new DBFacade();
+    pThread     = new QThread(this);
+
+    pFacade->moveToThread(pThread);
+    pThread->start(QThread::NormalPriority);
 
     // строка в статусбаре (теперь родителем её будет статусбар).
     statusLabel = new QLabel();
     ui->statusBar->addWidget(statusLabel);
     statusLabel->setText("Приложение загружено");
 
-    connect(&loginDlg,  SIGNAL(sendData(QString,QString,QString,QString)),
-                        SLOT(slotConnect(QString,QString,QString,QString)));
+
+    // Изначально был у меня такой вариант соединения, но потом я понял, что это бесполезно
+    // Исключения при таком соединении не обработать
+//        connect(&loginDlg,  SIGNAL(sendData(QString,QString,QString,QString)),
+//                pFacade,    SLOT(createConnection(QString,QString,QString,QString)));
+
+    connect(this, SIGNAL(closeConnection()), pFacade, SLOT(closeConnection()));
+    connect(this, SIGNAL(sendConnectionData(QString,QString,QString,QString)),
+            pFacade, SLOT(createConnection(QString,QString,QString,QString)));
+
 
 }
 
 MainWindow::~MainWindow()
 {
+    emit closeConnection();
+    pThread->terminate();
+    delete pFacade;
     delete ui;
 }
 
@@ -33,31 +48,17 @@ void MainWindow::on_actionConnect_triggered()
 
     loginDlg.exec();
 
-}
-
-void MainWindow::on_actionClose_triggered()
-{
-    //
-    // Завершение соединение
-    //
-
-    pFacade->closeConnection();
-    ui->actionClose->setEnabled(false);
-    ui->actionConnect->setEnabled(true);
-    statusLabel->setText("Соединение закрыто");
-}
-
-void MainWindow::slotConnect(QString hostnm, QString dbnm, QString usrnm, QString pass)
-{
-    //
-    // Соединение с базой данных
-    //
 
     try
     {
         // creating connection and processing exception
         statusLabel->setText("Подключение...");
-        pFacade->createConnection(hostnm, dbnm, usrnm, pass);
+
+        emit sendConnectionData(loginDlg.getHostname(),
+                                loginDlg.getDatabase(),
+                                loginDlg.getUsername(),
+                                loginDlg.getPassword());
+
         ui->actionClose->setEnabled(true);
         ui->actionConnect->setEnabled(false);
         statusLabel->setText("Соединение открыто");
@@ -68,4 +69,17 @@ void MainWindow::slotConnect(QString hostnm, QString dbnm, QString usrnm, QStrin
         statusLabel->setText("Соединение сброшено");
         return;
     }
+}
+
+void MainWindow::on_actionClose_triggered()
+{
+    //
+    // Завершение соединение
+    //
+
+    emit closeConnection();
+
+    ui->actionClose->setEnabled(false);
+    ui->actionConnect->setEnabled(true);
+    statusLabel->setText("Соединение закрыто");
 }

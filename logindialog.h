@@ -17,6 +17,11 @@ public:
     explicit LoginDialog(QWidget *parent = 0);
     ~LoginDialog();
 
+    QString getHostname()   const;
+    QString getDatabase()   const;
+    QString getUsername()   const;
+    QString getPassword()   const;
+
 private:
     Ui::LoginDialog *ui;
 
