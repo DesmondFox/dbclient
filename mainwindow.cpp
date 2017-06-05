@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(closeConnection()), pFacade, SLOT(closeConnection()));
     connect(this, SIGNAL(sendConnectionData(QString,QString,QString,QString)),
             pFacade, SLOT(createConnection(QString,QString,QString,QString)));
-
+    connect(pFacade, SIGNAL(connectionSuccessed()), SLOT(connectionSuccess()));
 
 }
 
@@ -58,10 +58,6 @@ void MainWindow::on_actionConnect_triggered()
                                 loginDlg.getDatabase(),
                                 loginDlg.getUsername(),
                                 loginDlg.getPassword());
-
-        ui->actionClose->setEnabled(true);
-        ui->actionConnect->setEnabled(false);
-        statusLabel->setText("Соединение открыто");
     }
     catch (DBException &e)
     {
@@ -82,4 +78,11 @@ void MainWindow::on_actionClose_triggered()
     ui->actionClose->setEnabled(false);
     ui->actionConnect->setEnabled(true);
     statusLabel->setText("Соединение закрыто");
+}
+
+void MainWindow::connectionSuccess()
+{
+    ui->actionClose->setEnabled(true);
+    ui->actionConnect->setEnabled(false);
+    statusLabel->setText("Подключено");
 }

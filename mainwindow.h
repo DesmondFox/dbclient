@@ -24,6 +24,7 @@ private slots:
     void on_actionConnect_triggered();
 
     void on_actionClose_triggered();
+    void connectionSuccess();
 
 signals:
     void closeConnection();

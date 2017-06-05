@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = DBClient
 TEMPLATE = app
 CONFIG += c++11
+#QMAKE_CXXFLAGS_DEBUG += -j4
 
 SOURCES += main.cpp\
         mainwindow.cpp \
