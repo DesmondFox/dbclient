@@ -31,9 +31,9 @@ void DBFacade::createConnection(const QString &server,
     // Проверяем, если соединяется, то всё отлично, иначе кидаем исключение
     if (!pDB->open())
     {
-        qDebug() << "Critical:\t No Connection";
-        throw DBException(pDB->lastError().text());
-
+        qDebug() << "Critical:\t No Connection " << pDB->lastError().text();
+        emit losingConnection(pDB->lastError().text());
+        return;
     }
 
     qDebug() << "Notice:\t Connection established " << pDB->hostName();

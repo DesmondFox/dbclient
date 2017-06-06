@@ -25,6 +25,7 @@ private slots:
 
     void on_actionClose_triggered();
     void connectionSuccess();
+    void connectionLosing(QString issue);
 
 signals:
     void closeConnection();

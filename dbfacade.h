@@ -5,7 +5,7 @@
 #include <QtSql>
 #include <QDebug>
 
-#include "dbexception.h"
+//#include "dbexception.h"
 
 class DBFacade : public QObject
 {
@@ -19,6 +19,7 @@ private:
 
 signals:
     void connectionSuccessed();
+    void losingConnection(QString why);
 
 public slots:
     void createConnection(const QString &server,

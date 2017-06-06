@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(sendConnectionData(QString,QString,QString,QString)),
             pFacade, SLOT(createConnection(QString,QString,QString,QString)));
     connect(pFacade, SIGNAL(connectionSuccessed()), SLOT(connectionSuccess()));
-
+    connect(pFacade, SIGNAL(losingConnection(QString)), SLOT(connectionLosing(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -46,12 +46,8 @@ void MainWindow::on_actionConnect_triggered()
     // Открытие диалога авторизации
     //
 
-    loginDlg.exec();
-
-
-    try
+    if (loginDlg.exec() == LoginDialog::Accepted)
     {
-        // creating connection and processing exception
         statusLabel->setText("Подключение...");
 
         emit sendConnectionData(loginDlg.getHostname(),
@@ -59,12 +55,7 @@ void MainWindow::on_actionConnect_triggered()
                                 loginDlg.getUsername(),
                                 loginDlg.getPassword());
     }
-    catch (DBException &e)
-    {
-        QMessageBox::critical(this, "Error", e.what());
-        statusLabel->setText("Соединение сброшено");
-        return;
-    }
+
 }
 
 void MainWindow::on_actionClose_triggered()
@@ -85,4 +76,10 @@ void MainWindow::connectionSuccess()
     ui->actionClose->setEnabled(true);
     ui->actionConnect->setEnabled(false);
     statusLabel->setText("Подключено");
+}
+
+void MainWindow::connectionLosing(QString issue)
+{
+    statusLabel->setText("Соединение сброшено");
+    QMessageBox::critical(this, "Ошибка соединения", "Убедитесь, что Вы правильно ввели данные. \n Error: "+issue);
 }
