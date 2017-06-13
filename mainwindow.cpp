@@ -10,7 +10,10 @@ MainWindow::MainWindow(QWidget *parent) :
     // фасад и поток
     pFacade     = new DBFacade();
     pThread     = new QThread(this);
+    pMainTable  = new MainTableWidget(pFacade, this);
 
+
+    // Запуск работы во втором потоке с нормальным приоритетом
     pFacade->moveToThread(pThread);
     pThread->start(QThread::NormalPriority);
 
@@ -19,11 +22,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->addWidget(statusLabel);
     statusLabel->setText("Приложение загружено");
 
+    // Перемещение MainTableWidget во вкладку
+    QVBoxLayout *pMainTableLayout   = new QVBoxLayout(ui->twMain);
+    pMainTableLayout->addWidget(pMainTable);
 
-    // Изначально был у меня такой вариант соединения, но потом я понял, что это бесполезно
-    // Исключения при таком соединении не обработать
-//        connect(&loginDlg,  SIGNAL(sendData(QString,QString,QString,QString)),
-//                pFacade,    SLOT(createConnection(QString,QString,QString,QString)));
+
 
     connect(this, SIGNAL(closeConnection()), pFacade, SLOT(closeConnection()));
     connect(this, SIGNAL(sendConnectionData(QString,QString,QString,QString)),
@@ -63,6 +66,7 @@ void MainWindow::on_actionClose_triggered()
     //
     // Завершение соединение
     //
+    pMainTable->setControls(false);
 
     emit closeConnection();
 
@@ -75,6 +79,7 @@ void MainWindow::connectionSuccess()
 {
     ui->actionClose->setEnabled(true);
     ui->actionConnect->setEnabled(false);
+    pMainTable->setControls(true);
     statusLabel->setText("Подключено");
 }
 

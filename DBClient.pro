@@ -16,13 +16,19 @@ CONFIG += c++11
 SOURCES += main.cpp\
         mainwindow.cpp \
     dbfacade.cpp \
-    dbexception.cpp \
-    logindialog.cpp
+    logindialog.cpp \
+    maintablewidget.cpp \
+    mtablemodel.cpp \
+    addnewbuilddialog.cpp
 
 HEADERS  += mainwindow.h \
     dbfacade.h \
-    dbexception.h \
-    logindialog.h
+    logindialog.h \
+    maintablewidget.h \
+    mtablemodel.h \
+    addnewbuilddialog.h
 
 FORMS    += mainwindow.ui \
-    logindialog.ui
+    logindialog.ui \
+    maintablewidget.ui \
+    addnewbuilddialog.ui
